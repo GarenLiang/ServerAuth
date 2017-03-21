@@ -3,8 +3,20 @@ const User = require('../models/user');
 const config = require('../config');
 const JwtStrategy = require('passport-jwt').Strategy;
 const ExtractJwt = require('passport-jwt').ExtractJwt;
+const LocalStrategy = require('passport-local');
+
+//create local strategy
+const localOptions = { usernameField: 'email' };
+const localLogin = new LocalStrategy({ usernameField: 'email' }, function(email, password, done) {
+//verify this username and password
+//if it is correct
+//otherwise, call done with false
+});
 //setup options for jwt strategy
-const jwtOptions = {};
+const jwtOptions = {
+  jwtFromRequest: ExtractJwt.fromHeader('authorization'),
+  secretOrKey: config.secret
+};
 //create jwt Strategy
 const jwtLogin = new JwtStrategy(jwtOptions, function(payload, done) {
   User.findById(payload.sub, function(err, user) {
@@ -18,3 +30,4 @@ const jwtLogin = new JwtStrategy(jwtOptions, function(payload, done) {
   });
 });
 //tell passport to use the strategy
+passport.use(jwtLogin);
